@@ -9,6 +9,7 @@ import time
 # get correct subfolder path
 script_path = Path(__file__).resolve()
 script_dir = script_path.parent
+
 input_path = script_dir / "input.txt"
 #input_path = script_dir / "example.txt"
 
