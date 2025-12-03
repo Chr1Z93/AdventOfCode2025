@@ -26,7 +26,6 @@ def get_max_joltage(bank):
     for batterie_index in range(0, batterie_count):
         for i in range(bank_index + 1, size - (batterie_count - batterie_index) + 1):
             num = int(bank[i])
-            #print(f"{batterie_index} - {i} - {num}")
             if num > resulting_numbers[batterie_index]:
                 resulting_numbers[batterie_index] = num
                 bank_index = i
@@ -46,7 +45,6 @@ def get_answer():
 
     for line in input_file:
         joltage = get_max_joltage(line.strip())
-        print(f"Joltage: {joltage}")
         answer += joltage
 
     return answer
