@@ -23,13 +23,11 @@ def get_answer():
 
     # parse input
     map = []  # x-y map, top left is 0/0 (x is downwards!)
-    debug_map = []
 
     x = -1
     for line in input_file:
         x += 1
         map.append(list(line.strip()))
-        debug_map.append(list(line.strip()))
 
     x = -1
     for line in map:
@@ -55,11 +53,8 @@ def get_answer():
             if nearby_rolls == 4:
                 continue
 
-            debug_map[x][y] = "x"
             answer += 1
 
-    for line in debug_map:
-        print(line)
     return answer
 
 

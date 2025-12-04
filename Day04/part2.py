@@ -28,7 +28,6 @@ def get_answer():
 
     for run in range(0, 100):
         if not changed_something:
-            print(f"Run: {run}")
             break
     
         changed_something = False
@@ -66,8 +65,6 @@ def get_answer():
                 map[x][y] = "x"
                 answer += 1
 
-    for line in map:
-        print(line)
     return answer
 
 
