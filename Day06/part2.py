@@ -27,17 +27,21 @@ def get_answer():
     operators = data[i]
     line_length = len(operators) - 1
 
+    # loop through the line with the operators
     j = -1
     for char in operators:
         j += 1
+
+        # skip meaningless chars
         if char == " " or char == "\n":
             continue
-        #print(f"j: {j} | char: {char}")
 
+        # initialize the result variable neutral
         result = 0
         if char == "*":
             result = 1
 
+        # check this "digit" and the next 4 places
         for k in range(j, j + 5):
             if k > line_length or (k != j and operators[k] != " "):
                 break
@@ -46,13 +50,13 @@ def get_answer():
             if num == False:
                 break
 
-            #print(f"k: {k} | num: {num}")
+            # perform the addition / multiplication
             if char == "+":
                 result += num
             elif char == "*":
                 result *= num
 
-        #print(f"result: {result}")
+        # add result to answer
         answer += result
 
     return answer
