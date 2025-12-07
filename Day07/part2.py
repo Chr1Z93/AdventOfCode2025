@@ -17,47 +17,34 @@ input_file = open(input_path)
 
 
 def get_answer():
-    data = []
-    start = None
-    for line in input_file:
-        if not start:
-            start = line.find("S")
-        data.append(list(line.strip()))
-
-    if start == None:
-        print("Start not found!")
-        return
-
-    # this set holds the indices of the beams
     beams = {}
-    beams[start] = 1
-
-    timelines = 1
-    for row in range(1, len(data)):
+    answer = 1
+    row = -1
+    for line in input_file:
+        row += 1
         if row % 2 == 1:
+            continue
+    
+        if row == 0:
+            beams[line.find("S")] = 1
             continue
 
         for col in list(beams):
-            if data[row][col] == "^":
+            if line[col] == "^":
                 incoming_beams = beams[col]
-                timelines += incoming_beams
+                answer += incoming_beams
                 del beams[col]
 
-                new_beam_1 = col - 1
-                new_beam_2 = col + 1
+                add_beam(beams, col - 1, incoming_beams)
+                add_beam(beams, col + 1, incoming_beams)
 
-                if new_beam_1 not in beams:
-                    beams[new_beam_1] = incoming_beams
-                else:
-                    beams[new_beam_1] += incoming_beams
+    return answer
 
-                if new_beam_2 not in beams:
-                    beams[new_beam_2] = incoming_beams
-                else:
-                    beams[new_beam_2] += incoming_beams
-
-    return timelines
-
+def add_beam(beams, id, times):
+    if id not in beams:
+        beams[id] = times
+    else:
+        beams[id] += times
 
 # start timer and run main code
 start_time = time.perf_counter()
