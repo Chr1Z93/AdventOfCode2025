@@ -1,49 +1,104 @@
 # Problem description:
 # List of junction boxes
 # Each line is one box (x, y, z)
-#
-#
+# Connect 1.000 closest boxes
+# Multiply sizes of three largest circuits
 
 from pathlib import Path
 import time
 from functools import cache
+from itertools import combinations
 
 # get correct subfolder path
 script_path = Path(__file__).resolve()
 script_dir = script_path.parent
 
-# input_path = script_dir / "input.txt"
-input_path = script_dir / "example.txt"
+input_path = script_dir / "input.txt"
+# input_path = script_dir / "example.txt"
 
 input_file = open(input_path)
 
 
 def get_answer():
-    answer = 0
+    max_pairs = 1000
+    evaluate_count = 3
 
+    # parse input into list of tuples
     boxes = []
     for line in input_file:
         strings = line.strip().split(",")
         boxes.append((int(strings[0]), int(strings[1]), int(strings[2])))
 
-    box_count = len(boxes)
-    for box in boxes:
-        closest_index = get_index_of_closest_box(box, boxes, box_count)
-        print(closest_index)
-        print(boxes[closest_index])
-        return
+    # generate list of all combinations and their distance
+    connection_data = []
+    for connection in combinations(boxes, 2):
+        connection_data.append([connection, get_distance(connection[0], connection[1])])
+
+    # sort by distance
+    connection_data.sort(key=lambda x: x[1])
+
+    # remove unwanted connections
+    del connection_data[max_pairs:]
+
+    # generate a dictionary that holds all tuple -> circuit members data
+    circuits = {}
+    for data in connection_data:
+        perform_connection(data, circuits)
+
+    # get all the unique circuits from that
+    unique_circuits = circuits.copy()
+    must_stay = {}
+
+    for member, circuit in circuits.items():
+        must_stay[member] = True
+
+        for submember in circuit:
+            if (
+                submember != member
+                and submember in unique_circuits
+                and submember not in must_stay
+            ):
+                del unique_circuits[submember]
+
+    # calculate the circuit sizes
+    sizes = []
+    for circuit in unique_circuits.values():
+        sizes.append(len(circuit))
+
+    # sort descending
+    sizes.sort(reverse=True)
+
+    # multiple the size of the largest circuits
+    answer = 1
+    for i in range(0, evaluate_count):
+        answer *= sizes[i]
     return answer
 
 
-def get_index_of_closest_box(box, boxes, box_count):
-    closest_index = -1
-    closest_distance = 0
-    for i in range(0, box_count):
-        d = get_distance(box, boxes[i])
-        if d != 0 and (closest_distance > d or closest_distance == 0):
-            closest_index = i
-            closest_distance = d
-    return closest_index
+def perform_connection(data, circuits):
+    start = data[0][0]
+    end = data[0][1]
+
+    if start not in circuits and end not in circuits:
+        # both points not connected
+        circuits[start] = {start, end}
+        circuits[end] = {start, end}
+
+    elif start in circuits and end in circuits:
+        # both points already connected
+        boxes = circuits[start] | circuits[end]
+        for box in boxes:
+            circuits[box] = boxes
+
+    elif start in circuits:
+        # start already connected
+        circuits[start].add(end)
+        circuits[end] = circuits[start]
+
+    elif end in circuits:
+        # end already connected
+        circuits[end].add(start)
+        circuits[start] = circuits[end]
 
 
 @cache
