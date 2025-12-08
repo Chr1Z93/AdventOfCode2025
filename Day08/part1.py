@@ -13,14 +13,14 @@ from itertools import combinations
 script_path = Path(__file__).resolve()
 script_dir = script_path.parent
 
-input_path = script_dir / "input.txt"
-# input_path = script_dir / "example.txt"
+# input_path = script_dir / "input.txt"
+input_path = script_dir / "example.txt"
 
 input_file = open(input_path)
 
 
 def get_answer():
-    max_pairs = 1000
+    max_pairs = 10
     evaluate_count = 3
 
     # parse input into list of tuples
@@ -72,6 +72,7 @@ def get_answer():
     answer = 1
     for i in range(0, evaluate_count):
         answer *= sizes[i]
+
     return answer
 
 
