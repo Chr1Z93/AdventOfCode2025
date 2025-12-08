@@ -68,7 +68,7 @@ def get_answer():
     # sort descending
     sizes.sort(reverse=True)
 
-    # multiple the size of the largest circuits
+    # multiply the size of the largest circuits
     answer = 1
     for i in range(0, evaluate_count):
         answer *= sizes[i]
