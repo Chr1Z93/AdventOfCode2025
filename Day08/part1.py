@@ -29,10 +29,15 @@ def get_answer():
         strings = line.strip().split(",")
         boxes.append((int(strings[0]), int(strings[1]), int(strings[2])))
 
+    # this holds the IDs for easier handling
+    box_ids = list(range(0, len(boxes)))
+
     # generate list of all combinations and their distance
     connection_data = []
-    for connection in combinations(boxes, 2):
-        connection_data.append([connection, get_distance(connection[0], connection[1])])
+    for connection in combinations(box_ids, 2):
+        box_1 = boxes[connection[0]]
+        box_2 = boxes[connection[1]]
+        connection_data.append([connection, get_distance(box_1, box_2)])
 
     # sort by distance
     connection_data.sort(key=lambda x: x[1])
@@ -40,10 +45,12 @@ def get_answer():
     # remove unwanted connections
     del connection_data[max_pairs:]
 
-    # generate a dictionary that holds all tuple -> circuit members data
+    # generate a dictionary that holds all box -> circuit members data
     circuits = {}
     for data in connection_data:
-        perform_connection(data, circuits)
+        box_1 = boxes[data[0][0]]
+        box_2 = boxes[data[0][1]]
+        perform_connection(box_1, box_2, circuits)
 
     # get all the unique circuits from that
     unique_circuits = circuits.copy()
@@ -76,10 +83,7 @@ def get_answer():
     return answer
 
 
-def perform_connection(data, circuits):
-    start = data[0][0]
-    end = data[0][1]
-
+def perform_connection(start, end, circuits):
     if start not in circuits and end not in circuits:
         # both points not connected
         circuits[start] = {start, end}
