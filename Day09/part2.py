@@ -26,15 +26,15 @@ def get_answer():
     red_tiles = []
     for line in input_file:
         split = line.strip().split(",")
-        red_tiles.append({"x": int(split[0]), "y": int(split[1])})
+        red_tiles.append([int(split[0]), int(split[1])])
 
     # create list of green tile edges
     green_tile_edges = []
 
-    previous_red_tile = red_tiles[-1]
-    for red_tile in red_tiles:
-        x1, y1 = previous_red_tile["x"], previous_red_tile["y"]
-        x2, y2 = red_tile["x"], red_tile["y"]
+    previous = red_tiles[-1]
+    for current in red_tiles:
+        x1, y1 = previous[0], previous[1]
+        x2, y2 = current[0], current[1]
 
         green_tile_edges.append(
             {
@@ -45,7 +45,7 @@ def get_answer():
             }
         )
 
-        previous_red_tile = red_tile
+        previous = current
 
     # look for largest rectangle with green tiles
     tile_index = -1
@@ -66,10 +66,10 @@ def get_answer():
 
 # make sure no edges intersect the rectangle
 def is_invalid(a, b, green_tile_edges):
-    x_min = min(a["x"], b["x"])
-    x_max = max(a["x"], b["x"])
-    y_min = min(a["y"], b["y"])
-    y_max = max(a["y"], b["y"])
+    x_min = min(a[0], b[0])
+    x_max = max(a[0], b[0])
+    y_min = min(a[1], b[1])
+    y_max = max(a[1], b[1])
 
     for edge in green_tile_edges:
         if edge["x_start"] <= x_min and edge["x_end"] <= x_min:
@@ -90,7 +90,7 @@ def is_invalid(a, b, green_tile_edges):
 
 
 def calculate_size(a, b):
-    return (abs((a["x"] - b["x"])) + 1) * (abs((a["y"] - b["y"])) + 1)
+    return (abs((a[0] - b[0])) + 1) * (abs((a[1] - b[1])) + 1)
 
 
 # start timer and run main code
