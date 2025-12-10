@@ -12,8 +12,8 @@ import pulp
 script_path = Path(__file__).resolve()
 script_dir = script_path.parent
 
-# input_path = script_dir / "input.txt"
-input_path = script_dir / "example.txt"
+input_path = script_dir / "input.txt"
+# input_path = script_dir / "example.txt"
 
 input_file = open(input_path)
 
@@ -67,6 +67,7 @@ def get_answer():
         if not min_presses:
             print(f"Line {line_id+1}: No solution found!")
         else:
+            print(f"{line_id}: {min_presses}")
             answer += int(min_presses)  # type: ignore
 
     return answer
@@ -80,7 +81,6 @@ def get_joltage_vector(line):
         string = section.replace("{", "").replace("}", "")
         components.append(int(string))
 
-    # b vector (target state)
     return np.array(components), len(components)
 
 
@@ -91,17 +91,12 @@ def get_button_matrix(line, size):
         button_count = 0
         for match in matches:
             button_count += 1
-            # Initialize a button effect vector of length 'size'
             button = [0] * size
-            # Set the indices that are affected to 1
             for value in match.split(","):
-                # Note: Assuming 'value' is an index 0-based
                 button[int(value)] = 1
 
             components.append(button)
 
-        # Transpose to get the button matrix A where columns are the buttons
-        # The result will be (size x button_count)
         return np.array(components).T, button_count
 
 
