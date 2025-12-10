@@ -44,20 +44,17 @@ def get_answer():
             if min_presses != None and button_presses >= min_presses:
                 continue
 
-            # The resulting state after pressing the buttons for this iteration
-            result = np.dot(button_matrix, vector)  # type: ignore
-
-            # If everything matches, this might be the new solution
-            if (result == joltage_vector).all():
+            # If resulting state after pressing the buttons matches, this might be the new solution
+            if (button_matrix @ vector == joltage_vector).all():
                 min_presses = button_presses
 
         # Add the number of button presses to the answer
         if not min_presses:
             print("No solution found!")
         else:
-            # print("-" * 10)
-            # print(f"Line: {i + 1}")
-            # print(f"Presses: {min_presses}")
+            print("-" * 10)
+            print(f"Line: {i + 1}")
+            print(f"Presses: {min_presses}")
             answer += min_presses
 
     return answer
