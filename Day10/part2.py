@@ -12,13 +12,13 @@ import itertools
 script_path = Path(__file__).resolve()
 script_dir = script_path.parent
 
-input_path = script_dir / "input.txt"
-# input_path = script_dir / "example.txt"
+# input_path = script_dir / "input.txt"
+input_path = script_dir / "example.txt"
 
 input_file = open(input_path)
 
-elements = [0, 1]
-indicator_pattern = r"\[.*\]"
+elements = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+joltage_pattern = r"\{.*\}"
 button_pattern = r"\((.+?)\)"
 
 
@@ -29,8 +29,8 @@ def get_answer():
     for line in input_file:
         i += 1
 
-        # This vector holds [True, False] for each element to indicate the final light state
-        indicator_vector, size = get_indicator_vector(line)
+        # This vector holds the joltage to indicate the final state
+        joltage_vector, size = get_joltage_vector(line)
 
         # This matrix holds [0, 1] in each element and each column corresponds to a single button
         button_matrix, button_count = get_button_matrix(line, size)  # type: ignore
@@ -47,11 +47,8 @@ def get_answer():
             # The resulting state after pressing the buttons for this iteration
             result = np.dot(button_matrix, vector)  # type: ignore
 
-            # Convert the state to [True, False] to compare to the indicator
-            odd_mask = result % 2 == 1
-
             # If everything matches, this might be the new solution
-            if (odd_mask == indicator_vector).all():
+            if (result == joltage_vector).all():
                 min_presses = button_presses
 
         # Add the number of button presses to the answer
@@ -66,15 +63,13 @@ def get_answer():
     return answer
 
 
-def get_indicator_vector(line):
-    matches = re.search(indicator_pattern, line)
+def get_joltage_vector(line):
+    matches = re.search(joltage_pattern, line)
     components = []
 
-    for char in matches[0]:  # type: ignore
-        if char == ".":
-            components.append(False)
-        elif char == "#":
-            components.append(True)
+    for section in matches[0].split(","):  # type: ignore
+        string = section.replace("{", "").replace("}", "")
+        components.append(int(string))
 
     return np.array(components), len(components)
 
